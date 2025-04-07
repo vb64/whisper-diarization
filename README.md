@@ -90,6 +90,8 @@ If your system has enough VRAM (>=10GB), you can use `diarize_parallel.py` inste
 - `--device`: Choose which device to use, defaults to "cuda" if available
 - `--language`: Manually select language, useful if language detection failed
 - `--batch-size`: Batch size for batched inference, reduce if you run out of memory, set to 0 for non-batched inference
+- `--python_bin`: Path to python executable, default is 'python'
+- `--num_speakers`: Forcing the number of speakers, default 0 (auto detection)
 
 ## Known Limitations
 - Overlapping speakers are yet to be addressed, a possible approach would be to separate the audio file and isolate only one speaker, then feed it into the pipeline but this will need much more computation

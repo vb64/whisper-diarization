@@ -89,6 +89,21 @@ parser.add_argument(
     help="if you have a GPU use 'cuda', otherwise 'cpu'",
 )
 
+parser.add_argument(
+    "--python_bin",
+    dest="python_bin",
+    default="python",
+    help="path to python executable, default is 'python'",
+)
+
+parser.add_argument(
+    "--num_speakers",
+    type=int,
+    dest="num_speakers",
+    default=0,
+    help="forcing the number of speakers, default 0 (auto detection)",
+)
+
 args = parser.parse_args()
 language = process_language_arg(args.language, args.model_name)
 
@@ -96,7 +111,7 @@ if args.stemming:
     # Isolate vocals from the rest of the audio
 
     return_code = os.system(
-        f'python -m demucs.separate -n htdemucs --two-stems=vocals "{args.audio}" -o temp_outputs --device "{args.device}"'
+        f'{args.python_bin} -m demucs.separate -n htdemucs --two-stems=vocals "{args.audio}" -o temp_outputs --device "{args.device}"'
     )
 
     if return_code != 0:
@@ -197,7 +212,7 @@ torchaudio.save(
 
 
 # Initialize NeMo MSDD diarization model
-msdd_model = NeuralDiarizer(cfg=create_config(temp_path)).to(args.device)
+msdd_model = NeuralDiarizer(cfg=create_config(temp_path, num_speakers=args.num_speakers)).to(args.device)
 msdd_model.diarize()
 
 del msdd_model

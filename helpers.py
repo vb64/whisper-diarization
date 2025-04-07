@@ -249,7 +249,7 @@ langs_to_iso = {
 }
 
 
-def create_config(output_dir):
+def create_config(output_dir, num_speakers=0):
     DOMAIN_TYPE = "telephonic"
     CONFIG_LOCAL_DIRECTORY = "nemo_msdd_configs"
     CONFIG_FILE_NAME = f"diar_infer_{DOMAIN_TYPE}.yaml"
@@ -273,6 +273,9 @@ def create_config(output_dir):
         "rttm_filepath": None,
         "uem_filepath": None,
     }
+    if num_speakers > 0:
+        meta["num_speakers"] = num_speakers
+
     with open(os.path.join(data_dir, "input_manifest.json"), "w") as fp:
         json.dump(meta, fp)
         fp.write("\n")
@@ -289,7 +292,7 @@ def create_config(output_dir):
     config.diarizer.oracle_vad = (
         False  # compute VAD provided with model_path to vad config
     )
-    config.diarizer.clustering.parameters.oracle_num_speakers = False
+    config.diarizer.clustering.parameters.oracle_num_speakers = (num_speakers > 0)
 
     # Here, we use our in-house pretrained NeMo VAD model
     config.diarizer.vad.model_path = pretrained_vad
