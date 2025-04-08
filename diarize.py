@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import re
+import time
 
 import faster_whisper
 import torch
@@ -32,6 +33,9 @@ from helpers import (
     whisper_langs,
     write_srt,
 )
+
+start_time = time.time()
+total_time = start_time
 
 mtypes = {"cpu": "int8", "cuda": "float16"}
 
@@ -274,3 +278,5 @@ with open(f"{os.path.splitext(args.audio)[0]}.srt", "w", encoding="utf-8-sig") a
     write_srt(ssm, srt)
 
 cleanup(temp_path)
+
+print("\nTotal: {} sec".format(int(time.time() - total_time)))
