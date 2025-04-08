@@ -9,7 +9,7 @@ PYTHON = ./venv/bin/python
 PIP = $(PYTHON) -m pip3 install
 endif
 
-DIARIZE = $(PYTHON) diarize.py --whisper-model large --language ru --python_bin venv\\Scripts\\python.exe
+DIARIZE = $(PYTHON) diarize.py --whisper-model large --language ru
 
 mp3:
 	$(DIARIZE) -a fixtures/ep-6-i.mp3

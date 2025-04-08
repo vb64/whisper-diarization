@@ -33,6 +33,7 @@ from helpers import (
     whisper_langs,
     write_srt,
 )
+from demucs import separate
 
 start_time = time.time()
 total_time = start_time
@@ -94,13 +95,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--python_bin",
-    dest="python_bin",
-    default="python",
-    help="path to python executable, default is 'python'",
-)
-
-parser.add_argument(
     "--num_speakers",
     type=int,
     dest="num_speakers",
@@ -113,24 +107,19 @@ language = process_language_arg(args.language, args.model_name)
 
 if args.stemming:
     # Isolate vocals from the rest of the audio
-
-    return_code = os.system(
-        f'{args.python_bin} -m demucs.separate -n htdemucs --two-stems=vocals "{args.audio}" -o temp_outputs --device "{args.device}"'
+    separate.main([
+      "-n", "htdemucs",
+      "--two-stems", "vocals",
+      "-o", "temp_outputs",
+      "--device", args.device,
+      args.audio
+    ])
+    vocal_target = os.path.join(
+        "temp_outputs",
+        "htdemucs",
+        os.path.splitext(os.path.basename(args.audio))[0],
+        "vocals.wav",
     )
-
-    if return_code != 0:
-        logging.warning(
-            "Source splitting failed, using original audio file. "
-            "Use --no-stem argument to disable it."
-        )
-        vocal_target = args.audio
-    else:
-        vocal_target = os.path.join(
-            "temp_outputs",
-            "htdemucs",
-            os.path.splitext(os.path.basename(args.audio))[0],
-            "vocals.wav",
-        )
 else:
     vocal_target = args.audio
 
