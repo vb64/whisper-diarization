@@ -33,7 +33,7 @@ from helpers import (
     whisper_langs,
     write_srt,
 )
-from demucs import separate
+from demucs.separate import main as demucs_separate
 
 start_time = time.time()
 total_time = start_time
@@ -107,7 +107,7 @@ language = process_language_arg(args.language, args.model_name)
 
 if args.stemming:
     # Isolate vocals from the rest of the audio
-    separate.main([
+    demucs_separate([
       "-n", "htdemucs",
       "--two-stems", "vocals",
       "-o", "temp_outputs",
